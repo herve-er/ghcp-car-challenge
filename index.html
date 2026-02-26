@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; connect-src https://api.open-meteo.com; style-src 'self'; script-src 'self'; img-src 'self' data:; font-src 'self';">
-    <meta name="description" content="Météo des neiges pour les stations de ski des Alpes genevoises : Chamonix, Verbier, Zermatt et plus.">
-    <title>Météo des Neiges – Alpes Genevoises</title>
+    <meta name="description" content="Météo des neiges pour les stations de ski des Alpes : France, Suisse, Autriche et Italie.">
+    <title>Météo des Neiges – Alpes</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
                 <span class="header-icon" aria-hidden="true">⛷️</span>
                 <div>
                     <h1>Météo des Neiges</h1>
-                    <p class="subtitle">Stations de ski des Alpes genevoises</p>
+                    <p class="subtitle">Stations de ski des Alpes</p>
                 </div>
             </div>
             <p class="last-updated" id="lastUpdated" aria-live="polite"></p>
@@ -29,6 +29,8 @@
             <button class="filter-btn active" data-filter="all" aria-pressed="true">Tous</button>
             <button class="filter-btn" data-filter="France" aria-pressed="false">France</button>
             <button class="filter-btn" data-filter="Suisse" aria-pressed="false">Suisse</button>
+            <button class="filter-btn" data-filter="Autriche" aria-pressed="false">Autriche</button>
+            <button class="filter-btn" data-filter="Italie" aria-pressed="false">Italie</button>
         </div>
 
         <div id="errorBanner" class="error-banner hidden" role="alert" aria-live="assertive"></div>

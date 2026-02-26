@@ -1,5 +1,5 @@
 /**
- * Météo des Neiges – Alpes Genevoises
+ * Météo des Neiges – Alpes
  * Fetches live weather data from the Open-Meteo API (https://open-meteo.com/)
  * and renders interactive resort cards.
  */
@@ -10,14 +10,28 @@
    Resort definitions
    =========================== */
 const RESORTS = [
-    { name: 'Chamonix',      country: 'France',  lat: 45.9237, lon:  6.8694, altitude: 1035 },
-    { name: 'Verbier',       country: 'Suisse',  lat: 46.0960, lon:  7.2270, altitude: 1500 },
-    { name: 'Zermatt',       country: 'Suisse',  lat: 46.0207, lon:  7.7491, altitude: 1620 },
-    { name: 'Megève',        country: 'France',  lat: 45.8567, lon:  6.6167, altitude: 1113 },
-    { name: 'Les Gets',      country: 'France',  lat: 46.1575, lon:  6.6683, altitude: 1172 },
-    { name: 'Crans-Montana', country: 'Suisse',  lat: 46.3110, lon:  7.4820, altitude: 1500 },
-    { name: 'Flaine',        country: 'France',  lat: 46.0000, lon:  6.6833, altitude: 1600 },
-    { name: 'Saas-Fee',      country: 'Suisse',  lat: 46.1132, lon:  7.9261, altitude: 1800 },
+    // France
+    { name: 'Chamonix',          country: 'France',   lat: 45.9237, lon:  6.8694, altitude: 1035 },
+    { name: 'Megève',            country: 'France',   lat: 45.8567, lon:  6.6167, altitude: 1113 },
+    { name: 'Les Gets',          country: 'France',   lat: 46.1575, lon:  6.6683, altitude: 1172 },
+    { name: 'Flaine',            country: 'France',   lat: 46.0000, lon:  6.6833, altitude: 1600 },
+    { name: 'Val d\'Isère',      country: 'France',   lat: 45.4481, lon:  6.9800, altitude: 1850 },
+    { name: 'Les Deux Alpes',    country: 'France',   lat: 45.0122, lon:  6.1208, altitude: 1650 },
+    // Suisse
+    { name: 'Verbier',           country: 'Suisse',   lat: 46.0960, lon:  7.2270, altitude: 1500 },
+    { name: 'Zermatt',           country: 'Suisse',   lat: 46.0207, lon:  7.7491, altitude: 1620 },
+    { name: 'Crans-Montana',     country: 'Suisse',   lat: 46.3110, lon:  7.4820, altitude: 1500 },
+    { name: 'Saas-Fee',          country: 'Suisse',   lat: 46.1132, lon:  7.9261, altitude: 1800 },
+    { name: 'Davos',             country: 'Suisse',   lat: 46.8027, lon:  9.8370, altitude: 1560 },
+    // Autriche
+    { name: 'St. Anton',         country: 'Autriche', lat: 47.1291, lon: 10.2683, altitude: 1304 },
+    { name: 'Kitzbühel',         country: 'Autriche', lat: 47.4452, lon: 12.3905, altitude:  762 },
+    { name: 'Ischgl',            country: 'Autriche', lat: 47.0124, lon: 10.2934, altitude: 1377 },
+    { name: 'Sölden',            country: 'Autriche', lat: 46.9624, lon: 11.0008, altitude: 1380 },
+    // Italie
+    { name: 'Courmayeur',        country: 'Italie',   lat: 45.7936, lon:  6.9699, altitude: 1224 },
+    { name: 'Cortina d\'Ampezzo', country: 'Italie',   lat: 46.5404, lon: 12.1357, altitude: 1224 },
+    { name: 'Livigno',           country: 'Italie',   lat: 46.5371, lon: 10.1368, altitude: 1816 },
 ];
 
 /* ===========================

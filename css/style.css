@@ -465,6 +465,65 @@ main {
 }
 
 /* ===========================
+   Map View
+   =========================== */
+.map-toggle-btn {
+    margin-left: auto;
+}
+
+.map-container {
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+#mapView {
+    height: 450px;
+    width: 100%;
+    background: var(--color-bg-card);
+}
+
+/* Leaflet popup styling to match dark theme */
+.leaflet-popup-content-wrapper {
+    background: var(--color-bg-card);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+}
+
+.leaflet-popup-tip {
+    background: var(--color-bg-card);
+}
+
+.leaflet-popup-content {
+    font-family: var(--font-stack);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.map-popup-name {
+    font-weight: 700;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.15rem;
+}
+
+.map-popup-meta {
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    display: block;
+}
+
+.map-popup-rating {
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+/* ===========================
    Footer
    =========================== */
 footer {

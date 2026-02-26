@@ -316,6 +316,90 @@ function buildResortCard(resort, data) {
 }
 
 /* ===========================
+   Map View
+   =========================== */
+let mapInstance = null;
+let mapMarkers = [];
+
+const RATING_COLORS = {
+    'rating-excellent': '#4fc3f7',
+    'rating-good':      '#4caf50',
+    'rating-fair':      '#ff9800',
+    'rating-poor':      '#f44336',
+};
+
+function initMap() {
+    if (mapInstance || typeof L === 'undefined') return;
+    const mapEl = document.getElementById('mapView');
+    if (!mapEl) return;
+
+    mapInstance = L.map('mapView').setView([46.05, 7.2], 8);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19,
+    }).addTo(mapInstance);
+}
+
+function updateMapMarkers() {
+    if (!mapInstance) return;
+    mapMarkers.forEach(m => m.remove());
+    mapMarkers = [];
+
+    allCards.forEach(({ resort, card }) => {
+        const ratingClass = [...card.classList].find(c => c.startsWith('rating-')) || 'rating-poor';
+        const color = RATING_COLORS[ratingClass] || '#4fc3f7';
+        const ratingBadge = card.querySelector('.ski-rating-badge');
+        const ratingText = ratingBadge ? ratingBadge.textContent : '';
+
+        const marker = L.circleMarker([resort.lat, resort.lon], {
+            radius: 10,
+            fillColor: color,
+            color: '#ffffff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.85,
+        }).addTo(mapInstance);
+
+        // Build popup DOM safely (no innerHTML with dynamic data)
+        const popup = document.createElement('div');
+        const nameEl = el('strong', { cls: ['map-popup-name'], text: resort.name });
+        const metaEl = el('span', { cls: ['map-popup-meta'], text: `${resort.country} \u00b7 ${resort.altitude}\u00a0m` });
+        popup.appendChild(nameEl);
+        popup.appendChild(metaEl);
+        if (ratingText) {
+            popup.appendChild(el('span', { cls: ['map-popup-rating'], text: ratingText }));
+        }
+
+        marker.bindPopup(popup);
+        mapMarkers.push(marker);
+    });
+}
+
+function initMapToggle() {
+    const btn = document.getElementById('mapToggle');
+    const container = document.getElementById('mapContainer');
+    if (!btn || !container) return;
+
+    btn.addEventListener('click', () => {
+        const isVisible = !container.classList.contains('hidden');
+        if (isVisible) {
+            container.classList.add('hidden');
+            btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
+        } else {
+            container.classList.remove('hidden');
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+            initMap();
+            updateMapMarkers();
+            if (mapInstance) mapInstance.invalidateSize();
+        }
+    });
+}
+
+/* ===========================
    Filtering
    =========================== */
 let allCards = []; // [{resort, card}]
@@ -328,7 +412,7 @@ function applyFilter(filter) {
 }
 
 function initFilters() {
-    const btns = document.querySelectorAll('.filter-btn');
+    const btns = document.querySelectorAll('.filter-btn[data-filter]');
     btns.forEach(btn => {
         btn.addEventListener('click', () => {
             btns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
@@ -407,6 +491,12 @@ async function init() {
 
     updateTimestamp();
 
+    // Refresh map markers if map is already open
+    const mapContainer = document.getElementById('mapContainer');
+    if (mapContainer && !mapContainer.classList.contains('hidden')) {
+        updateMapMarkers();
+    }
+
     // Auto-refresh every 30 minutes
     setTimeout(() => { init(); }, 30 * 60 * 1000);
 }
@@ -414,5 +504,6 @@ async function init() {
 // Start when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initFilters();
+    initMapToggle();
     init();
 });

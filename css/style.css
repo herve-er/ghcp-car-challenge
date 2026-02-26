@@ -527,6 +527,257 @@ footer a:hover {
 }
 
 /* ===========================
+   Resort Card – Detail Link
+   =========================== */
+.detail-link {
+    display: block;
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: right;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.6rem;
+    margin-top: auto;
+    transition: color var(--transition);
+}
+
+.detail-link:hover {
+    color: var(--color-accent-snow);
+    text-decoration: underline;
+}
+
+/* ===========================
+   Detail Page – Back Link
+   =========================== */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-accent);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    background: var(--color-bg-card);
+    transition: background var(--transition), border-color var(--transition);
+}
+
+.back-link:hover {
+    background: var(--color-bg-card-hover);
+    border-color: var(--color-accent);
+}
+
+/* ===========================
+   Detail Page – Layout
+   =========================== */
+#resortDetail {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.detail-section-title {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+/* ===========================
+   Detail Page – Current Conditions
+   =========================== */
+.detail-current {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.detail-current::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--card-accent, var(--color-accent)), transparent);
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.detail-current.rating-excellent { --card-accent: #4fc3f7; }
+.detail-current.rating-good      { --card-accent: #4caf50; }
+.detail-current.rating-fair      { --card-accent: #ff9800; }
+.detail-current.rating-poor      { --card-accent: #f44336; }
+
+.detail-resort-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* ===========================
+   Extended 7-Day Forecast
+   =========================== */
+.extended-forecast {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.75rem;
+}
+
+.extended-day {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 0.75rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition), border-color var(--transition);
+}
+
+.extended-day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-accent, var(--color-border));
+    border-radius: 10px 10px 0 0;
+}
+
+.extended-day:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
+}
+
+.extended-day.rating-excellent { --card-accent: #4fc3f7; }
+.extended-day.rating-good      { --card-accent: #4caf50; }
+.extended-day.rating-fair      { --card-accent: #ff9800; }
+.extended-day.rating-poor      { --card-accent: #f44336; }
+
+.extended-day-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+}
+
+.extended-day-weekday {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.extended-day-date {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+}
+
+.extended-day-stats {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.4rem;
+    margin-top: 0.15rem;
+}
+
+.extended-day-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.extended-day-stat .stat-label { font-size: 0.65rem; }
+.extended-day-stat .stat-value { font-size: 0.78rem; }
+
+/* ===========================
+   Hourly Overview Table
+   =========================== */
+.hourly-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hourly-table th {
+    text-align: left;
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+}
+
+.hourly-table td {
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid rgba(42, 64, 96, 0.4);
+    color: var(--color-text-secondary);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.hourly-table tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.hourly-time {
+    color: var(--color-text-muted) !important;
+    font-size: 0.8rem;
+    width: 4rem;
+}
+
+.hourly-icon { font-size: 1.2rem; }
+
+.hourly-temp {
+    color: var(--color-text-primary) !important;
+    font-weight: 600;
+    width: 4.5rem;
+}
+
+.hourly-snow-cell { min-width: 160px; }
+
+.snow-bar-wrap {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.snow-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-snow), var(--color-accent));
+    border-radius: 4px;
+    min-width: 2px;
+}
+
+.snow-bar-label {
+    font-size: 0.75rem;
+    color: var(--color-snow);
+}
+
+/* ===========================
    Reduced Motion
    =========================== */
 @media (prefers-reduced-motion: reduce) {

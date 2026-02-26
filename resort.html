@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; connect-src https://api.open-meteo.com; style-src 'self'; script-src 'self'; img-src 'self' data:; font-src 'self';">
+    <meta name="description" content="Prévisions détaillées et aperçu horaire pour une station de ski des Alpes genevoises.">
+    <title>Météo des Neiges – Détails</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <div class="header-title">
+                <span class="header-icon" aria-hidden="true">⛷️</span>
+                <div>
+                    <h1>Météo des Neiges</h1>
+                    <p class="subtitle" id="resortSubtitle">Chargement…</p>
+                </div>
+            </div>
+            <p class="last-updated" id="lastUpdated" aria-live="polite"></p>
+        </div>
+    </header>
+
+    <main>
+        <a href="index.html" class="back-link" aria-label="Retour à la liste des stations">← Retour aux stations</a>
+
+        <div id="errorBanner" class="error-banner hidden" role="alert" aria-live="assertive"></div>
+
+        <div id="resortDetail" aria-live="polite">
+            <!-- Injected by resort.js -->
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            Données météo fournies par
+            <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+            &middot; Mise à jour toutes les 30 minutes
+        </p>
+    </footer>
+
+    <script src="js/resort.js"></script>
+</body>
+</html>

@@ -319,11 +319,14 @@ function buildResortCard(resort, data) {
    Filtering
    =========================== */
 let allCards = []; // [{resort, card}]
+let activeFilter = 'all';
+let searchQuery = '';
 
-function applyFilter(filter) {
+function applyFilters() {
     allCards.forEach(({ resort, card }) => {
-        const visible = filter === 'all' || resort.country === filter;
-        card.style.display = visible ? '' : 'none';
+        const matchesFilter = activeFilter === 'all' || resort.country === activeFilter;
+        const matchesSearch = resort.name.toLowerCase().includes(searchQuery.toLowerCase());
+        card.style.display = matchesFilter && matchesSearch ? '' : 'none';
     });
 }
 
@@ -334,9 +337,18 @@ function initFilters() {
             btns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
             btn.classList.add('active');
             btn.setAttribute('aria-pressed', 'true');
-            applyFilter(btn.dataset.filter);
+            activeFilter = btn.dataset.filter;
+            applyFilters();
         });
     });
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            searchQuery = searchInput.value.trim();
+            applyFilters();
+        });
+    }
 }
 
 /* ===========================
@@ -406,6 +418,7 @@ async function init() {
     }
 
     updateTimestamp();
+    applyFilters(); // re-apply active country filter + search query after data refresh
 
     // Auto-refresh every 30 minutes
     setTimeout(() => { init(); }, 30 * 60 * 1000);

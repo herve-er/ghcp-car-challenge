@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; connect-src https://api.open-meteo.com; style-src 'self' https://unpkg.com 'unsafe-inline'; script-src 'self' https://unpkg.com; img-src 'self' data: https://*.basemaps.cartocdn.com; font-src 'self';">
-    <meta name="description" content="Météo des neiges pour les stations de ski des Alpes genevoises : Chamonix, Verbier, Zermatt et plus.">
-    <title>Météo des Neiges – Alpes Genevoises</title>
+    <meta name="description" content="Météo des neiges pour les stations de ski des Alpes : France, Suisse, Autriche et Italie.">
+    <title>Météo des Neiges – Alpes</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
@@ -17,7 +17,7 @@
                 <span class="header-icon" aria-hidden="true">⛷️</span>
                 <div>
                     <h1>Météo des Neiges</h1>
-                    <p class="subtitle">Stations de ski des Alpes genevoises</p>
+                    <p class="subtitle">Stations de ski des Alpes</p>
                 </div>
             </div>
             <p class="last-updated" id="lastUpdated" aria-live="polite"></p>
@@ -30,6 +30,8 @@
             <button class="filter-btn active" data-filter="all" aria-pressed="true">Tous</button>
             <button class="filter-btn" data-filter="France" aria-pressed="false">France</button>
             <button class="filter-btn" data-filter="Suisse" aria-pressed="false">Suisse</button>
+            <button class="filter-btn" data-filter="Autriche" aria-pressed="false">Autriche</button>
+            <button class="filter-btn" data-filter="Italie" aria-pressed="false">Italie</button>
             <button class="filter-btn map-toggle-btn" id="mapToggle" aria-pressed="false">🗺️ Carte</button>
             <input type="search" id="searchInput" class="search-input" placeholder="Rechercher une station…" aria-label="Rechercher une station de ski">
         </div>

@@ -292,6 +292,17 @@ function buildResortCard(resort, data) {
     ratingRow.appendChild(el('span', { cls: ['ski-rating-badge', rating.class], text: rating.label }));
     card.appendChild(ratingRow);
 
+    // --- Detail Link ---
+    const detailLink = el('a', {
+        cls:   ['detail-link'],
+        text:  'Voir les détails →',
+        attrs: {
+            href:        `resort.html?resort=${encodeURIComponent(resort.name)}`,
+            'aria-label': `Voir les détails de ${resort.name}`,
+        },
+    });
+    card.appendChild(detailLink);
+
     // --- 3-Day Forecast ---
     if (daily && daily.time && daily.time.length >= 3) {
         const forecastSection = el('div', { cls: ['forecast-section'] });

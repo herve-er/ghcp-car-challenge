@@ -45,6 +45,24 @@
         </div>
     </main>
 
+    <!-- Compare Bar (appears when 2–3 resorts are selected) -->
+    <div id="compareBar" class="compare-bar hidden" role="status" aria-live="polite">
+        <span id="compareCount" class="compare-count"></span>
+        <button id="compareBtn" class="compare-action-btn">⚖️ Comparer</button>
+        <button id="clearCompareBtn" class="compare-clear-btn" aria-label="Effacer la sélection">✕ Effacer</button>
+    </div>
+
+    <!-- Compare Modal -->
+    <div id="compareModal" class="compare-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="compareModalTitle">
+        <div class="compare-modal-content">
+            <div class="compare-modal-header">
+                <h2 id="compareModalTitle">⚖️ Comparaison des stations</h2>
+                <button id="compareModalClose" class="compare-modal-close" aria-label="Fermer la comparaison">✕</button>
+            </div>
+            <div id="compareTableContainer" class="compare-table-container"></div>
+        </div>
+    </div>
+
     <footer>
         <p>
             Données météo fournies par

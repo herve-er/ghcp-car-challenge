@@ -617,3 +617,267 @@ footer a:hover {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ===========================
+   Compare Toggle Button (on cards)
+   =========================== */
+.compare-toggle-btn {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.compare-toggle-btn:hover:not([disabled]) {
+    background: rgba(79, 195, 247, 0.1);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.compare-toggle-btn[aria-pressed="true"] {
+    background: rgba(79, 195, 247, 0.15);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    font-weight: 600;
+}
+
+.compare-toggle-btn[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* Selected card highlight */
+.resort-card.compare-selected {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.25), var(--shadow-card);
+}
+
+/* ===========================
+   Compare Bar (sticky bottom)
+   =========================== */
+.compare-bar {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #0d3050, #0a1929);
+    border: 1px solid var(--color-accent);
+    border-radius: 40px;
+    padding: 0.6rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+    z-index: 200;
+    white-space: nowrap;
+}
+
+.compare-count {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.compare-action-btn {
+    background: var(--color-accent);
+    color: #0a1929;
+    border: none;
+    border-radius: 20px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity var(--transition);
+}
+
+.compare-action-btn:hover {
+    opacity: 0.85;
+}
+
+.compare-clear-btn {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition);
+}
+
+.compare-clear-btn:hover {
+    color: var(--color-bad);
+    border-color: var(--color-bad);
+}
+
+/* ===========================
+   Compare Modal
+   =========================== */
+.compare-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.compare-modal-overlay.hidden {
+    display: none !important;
+}
+
+.compare-modal-content {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    width: 100%;
+    max-width: 860px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+}
+
+.compare-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.compare-modal-header h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+.compare-modal-close {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color var(--transition), border-color var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compare-modal-close:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-secondary);
+}
+
+.compare-table-container {
+    overflow: auto;
+    padding: 1.25rem 1.5rem;
+    flex: 1;
+}
+
+.compare-table-wrapper {
+    overflow-x: auto;
+}
+
+.compare-table-el {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.compare-th-label,
+.compare-th-resort {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.compare-th-label {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: 30%;
+}
+
+.compare-th-resort {
+    color: var(--color-text-primary);
+    font-weight: 700;
+    min-width: 140px;
+}
+
+.compare-resort-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+.compare-resort-meta {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    margin-top: 0.15rem;
+}
+
+.compare-td-label {
+    padding: 0.65rem 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.compare-td {
+    padding: 0.65rem 1rem;
+    color: var(--color-text-primary);
+    font-weight: 500;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.compare-table-el tbody tr:last-child .compare-td-label,
+.compare-table-el tbody tr:last-child .compare-td {
+    border-bottom: none;
+}
+
+.compare-table-el tbody tr:hover .compare-td,
+.compare-table-el tbody tr:hover .compare-td-label {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 600px) {
+    .compare-bar {
+        bottom: 0.75rem;
+        padding: 0.5rem 1rem;
+        gap: 0.5rem;
+    }
+
+    .compare-modal-content {
+        max-height: 90vh;
+    }
+
+    .compare-modal-header {
+        padding: 1rem;
+    }
+
+    .compare-table-container {
+        padding: 0.75rem 1rem;
+    }
+}

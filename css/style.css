@@ -151,6 +151,29 @@ main {
     font-weight: 600;
 }
 
+.search-input {
+    background: var(--color-bg-card);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color var(--transition), background var(--transition);
+    min-width: 180px;
+    margin-left: 0.5rem;
+}
+
+.search-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.search-input:focus {
+    border-color: var(--color-accent);
+    background: var(--color-bg-card-hover);
+}
+
 /* ===========================
    Error Banner
    =========================== */
@@ -465,6 +488,65 @@ main {
 }
 
 /* ===========================
+   Map View
+   =========================== */
+.map-toggle-btn {
+    margin-left: auto;
+}
+
+.map-container {
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+#mapView {
+    height: 450px;
+    width: 100%;
+    background: var(--color-bg-card);
+}
+
+/* Leaflet popup styling to match dark theme */
+.leaflet-popup-content-wrapper {
+    background: var(--color-bg-card);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+}
+
+.leaflet-popup-tip {
+    background: var(--color-bg-card);
+}
+
+.leaflet-popup-content {
+    font-family: var(--font-stack);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.map-popup-name {
+    font-weight: 700;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.15rem;
+}
+
+.map-popup-meta {
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    display: block;
+}
+
+.map-popup-rating {
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+/* ===========================
    Footer
    =========================== */
 footer {
@@ -527,11 +609,526 @@ footer a:hover {
 }
 
 /* ===========================
+   Resort Card – Detail Link
+   =========================== */
+.detail-link {
+    display: block;
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: right;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.6rem;
+    margin-top: auto;
+    transition: color var(--transition);
+}
+
+.detail-link:hover {
+    color: var(--color-accent-snow);
+    text-decoration: underline;
+}
+
+/* ===========================
+   Detail Page – Back Link
+   =========================== */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-accent);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    background: var(--color-bg-card);
+    transition: background var(--transition), border-color var(--transition);
+}
+
+.back-link:hover {
+    background: var(--color-bg-card-hover);
+    border-color: var(--color-accent);
+}
+
+/* ===========================
+   Detail Page – Layout
+   =========================== */
+#resortDetail {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.detail-section-title {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+/* ===========================
+   Detail Page – Current Conditions
+   =========================== */
+.detail-current {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.detail-current::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--card-accent, var(--color-accent)), transparent);
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.detail-current.rating-excellent { --card-accent: #4fc3f7; }
+.detail-current.rating-good      { --card-accent: #4caf50; }
+.detail-current.rating-fair      { --card-accent: #ff9800; }
+.detail-current.rating-poor      { --card-accent: #f44336; }
+
+.detail-resort-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* ===========================
+   Extended 7-Day Forecast
+   =========================== */
+.extended-forecast {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.75rem;
+}
+
+.extended-day {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 0.75rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition), border-color var(--transition);
+}
+
+.extended-day::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-accent, var(--color-border));
+    border-radius: 10px 10px 0 0;
+}
+
+.extended-day:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
+}
+
+.extended-day.rating-excellent { --card-accent: #4fc3f7; }
+.extended-day.rating-good      { --card-accent: #4caf50; }
+.extended-day.rating-fair      { --card-accent: #ff9800; }
+.extended-day.rating-poor      { --card-accent: #f44336; }
+
+.extended-day-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+}
+
+.extended-day-weekday {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.extended-day-date {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+}
+
+.extended-day-stats {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.4rem;
+    margin-top: 0.15rem;
+}
+
+.extended-day-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.extended-day-stat .stat-label { font-size: 0.65rem; }
+.extended-day-stat .stat-value { font-size: 0.78rem; }
+
+/* ===========================
+   Hourly Overview Table
+   =========================== */
+.hourly-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hourly-table th {
+    text-align: left;
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+}
+
+.hourly-table td {
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid rgba(42, 64, 96, 0.4);
+    color: var(--color-text-secondary);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.hourly-table tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.hourly-time {
+    color: var(--color-text-muted) !important;
+    font-size: 0.8rem;
+    width: 4rem;
+}
+
+.hourly-icon { font-size: 1.2rem; }
+
+.hourly-temp {
+    color: var(--color-text-primary) !important;
+    font-weight: 600;
+    width: 4.5rem;
+}
+
+.hourly-snow-cell { min-width: 160px; }
+
+.snow-bar-wrap {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.snow-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-snow), var(--color-accent));
+    border-radius: 4px;
+    min-width: 2px;
+}
+
+.snow-bar-label {
+    font-size: 0.75rem;
+    color: var(--color-snow);
+}
+
+/* ===========================
    Reduced Motion
    =========================== */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* ===========================
+   Compare Toggle Button (on cards)
+   =========================== */
+.compare-toggle-btn {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.compare-toggle-btn:hover:not([disabled]) {
+    background: rgba(79, 195, 247, 0.1);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.compare-toggle-btn[aria-pressed="true"] {
+    background: rgba(79, 195, 247, 0.15);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    font-weight: 600;
+}
+
+.compare-toggle-btn[disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* Selected card highlight */
+.resort-card.compare-selected {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(79, 195, 247, 0.25), var(--shadow-card);
+}
+
+/* ===========================
+   Compare Bar (sticky bottom)
+   =========================== */
+.compare-bar {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #0d3050, #0a1929);
+    border: 1px solid var(--color-accent);
+    border-radius: 40px;
+    padding: 0.6rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+    z-index: 200;
+    white-space: nowrap;
+}
+
+.compare-count {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.compare-action-btn {
+    background: var(--color-accent);
+    color: #0a1929;
+    border: none;
+    border-radius: 20px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity var(--transition);
+}
+
+.compare-action-btn:hover {
+    opacity: 0.85;
+}
+
+.compare-clear-btn {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition);
+}
+
+.compare-clear-btn:hover {
+    color: var(--color-bad);
+    border-color: var(--color-bad);
+}
+
+/* ===========================
+   Compare Modal
+   =========================== */
+.compare-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.compare-modal-overlay.hidden {
+    display: none !important;
+}
+
+.compare-modal-content {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    width: 100%;
+    max-width: 860px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+}
+
+.compare-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.compare-modal-header h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+.compare-modal-close {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color var(--transition), border-color var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compare-modal-close:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-secondary);
+}
+
+.compare-table-container {
+    overflow: auto;
+    padding: 1.25rem 1.5rem;
+    flex: 1;
+}
+
+.compare-table-wrapper {
+    overflow-x: auto;
+}
+
+.compare-table-el {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.compare-th-label,
+.compare-th-resort {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.compare-th-label {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: 30%;
+}
+
+.compare-th-resort {
+    color: var(--color-text-primary);
+    font-weight: 700;
+    min-width: 140px;
+}
+
+.compare-resort-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+.compare-resort-meta {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    margin-top: 0.15rem;
+}
+
+.compare-td-label {
+    padding: 0.65rem 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.compare-td {
+    padding: 0.65rem 1rem;
+    color: var(--color-text-primary);
+    font-weight: 500;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.compare-table-el tbody tr:last-child .compare-td-label,
+.compare-table-el tbody tr:last-child .compare-td {
+    border-bottom: none;
+}
+
+.compare-table-el tbody tr:hover .compare-td,
+.compare-table-el tbody tr:hover .compare-td-label {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 600px) {
+    .compare-bar {
+        bottom: 0.75rem;
+        padding: 0.5rem 1rem;
+        gap: 0.5rem;
+    }
+
+    .compare-modal-content {
+        max-height: 90vh;
+    }
+
+    .compare-modal-header {
+        padding: 1rem;
+    }
+
+    .compare-table-container {
+        padding: 0.75rem 1rem;
     }
 }

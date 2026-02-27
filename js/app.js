@@ -232,6 +232,19 @@ function buildResortCard(resort, data) {
     meta.appendChild(el('span', { cls: ['resort-altitude'], text: `${resort.altitude} m` }));
     nameBlock.appendChild(meta);
     header.appendChild(nameBlock);
+
+    // Compare toggle button
+    const compareToggle = el('button', {
+        cls: ['compare-toggle-btn'],
+        text: '+ Comparer',
+        attrs: {
+            'aria-pressed': 'false',
+            'aria-label': `Sélectionner ${resort.name} pour comparer`,
+        },
+    });
+    compareToggle.addEventListener('click', () => toggleCompare(resort.name));
+    header.appendChild(compareToggle);
+
     card.appendChild(header);
 
     // --- Current weather ---
@@ -293,6 +306,17 @@ function buildResortCard(resort, data) {
     ratingRow.appendChild(el('span', { cls: ['ski-rating-badge', rating.class], text: rating.label }));
     card.appendChild(ratingRow);
 
+    // --- Detail Link ---
+    const detailLink = el('a', {
+        cls:   ['detail-link'],
+        text:  'Voir les détails →',
+        attrs: {
+            href:        `resort.html?resort=${encodeURIComponent(resort.name)}`,
+            'aria-label': `Voir les détails de ${resort.name}`,
+        },
+    });
+    card.appendChild(detailLink);
+
     // --- 3-Day Forecast ---
     if (daily && daily.time && daily.time.length >= 3) {
         const forecastSection = el('div', { cls: ['forecast-section'] });
@@ -330,27 +354,123 @@ function buildResortCard(resort, data) {
 }
 
 /* ===========================
+   Map View
+   =========================== */
+let mapInstance = null;
+let mapMarkers = [];
+
+const RATING_COLORS = {
+    'rating-excellent': '#4fc3f7',
+    'rating-good':      '#4caf50',
+    'rating-fair':      '#ff9800',
+    'rating-poor':      '#f44336',
+};
+
+function initMap() {
+    if (mapInstance || typeof L === 'undefined') return;
+    const mapEl = document.getElementById('mapView');
+    if (!mapEl) return;
+
+    mapInstance = L.map('mapView').setView([46.05, 7.2], 8);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19,
+    }).addTo(mapInstance);
+}
+
+function updateMapMarkers() {
+    if (!mapInstance) return;
+    mapMarkers.forEach(m => m.remove());
+    mapMarkers = [];
+
+    allCards.forEach(({ resort, card }) => {
+        const ratingClass = [...card.classList].find(c => c.startsWith('rating-')) || 'rating-poor';
+        const color = RATING_COLORS[ratingClass] || '#4fc3f7';
+        const ratingBadge = card.querySelector('.ski-rating-badge');
+        const ratingText = ratingBadge ? ratingBadge.textContent : '';
+
+        const marker = L.circleMarker([resort.lat, resort.lon], {
+            radius: 10,
+            fillColor: color,
+            color: '#ffffff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.85,
+        }).addTo(mapInstance);
+
+        // Build popup DOM safely (no innerHTML with dynamic data)
+        const popup = document.createElement('div');
+        const nameEl = el('strong', { cls: ['map-popup-name'], text: resort.name });
+        const metaEl = el('span', { cls: ['map-popup-meta'], text: `${resort.country} \u00b7 ${resort.altitude}\u00a0m` });
+        popup.appendChild(nameEl);
+        popup.appendChild(metaEl);
+        if (ratingText) {
+            popup.appendChild(el('span', { cls: ['map-popup-rating'], text: ratingText }));
+        }
+
+        marker.bindPopup(popup);
+        mapMarkers.push(marker);
+    });
+}
+
+function initMapToggle() {
+    const btn = document.getElementById('mapToggle');
+    const container = document.getElementById('mapContainer');
+    if (!btn || !container) return;
+
+    btn.addEventListener('click', () => {
+        const isVisible = !container.classList.contains('hidden');
+        if (isVisible) {
+            container.classList.add('hidden');
+            btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
+        } else {
+            container.classList.remove('hidden');
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+            initMap();
+            updateMapMarkers();
+            if (mapInstance) mapInstance.invalidateSize();
+        }
+    });
+}
+
+/* ===========================
    Filtering
    =========================== */
-let allCards = []; // [{resort, card}]
+let allCards = []; // [{resort, card, data}]
+let activeFilter = 'all';
+let searchQuery = '';
 
-function applyFilter(filter) {
+function applyFilters() {
     allCards.forEach(({ resort, card }) => {
-        const visible = filter === 'all' || resort.country === filter;
-        card.style.display = visible ? '' : 'none';
+        const matchesFilter = activeFilter === 'all' || resort.country === activeFilter;
+        const matchesSearch = resort.name.toLowerCase().includes(searchQuery.toLowerCase());
+        card.style.display = matchesFilter && matchesSearch ? '' : 'none';
     });
 }
 
 function initFilters() {
-    const btns = document.querySelectorAll('.filter-btn');
+    const btns = document.querySelectorAll('.filter-btn[data-filter]');
     btns.forEach(btn => {
         btn.addEventListener('click', () => {
             btns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
             btn.classList.add('active');
             btn.setAttribute('aria-pressed', 'true');
-            applyFilter(btn.dataset.filter);
+            activeFilter = btn.dataset.filter;
+            applyFilters();
         });
     });
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            searchQuery = searchInput.value.trim();
+            applyFilters();
+        });
+    }
 }
 
 /* ===========================
@@ -379,6 +499,178 @@ function updateTimestamp() {
 }
 
 /* ===========================
+   Comparison Feature
+   =========================== */
+const selectedForCompare = new Set(); // Set of resort name strings (e.g. 'Chamonix')
+
+function toggleCompare(resortName) {
+    if (selectedForCompare.has(resortName)) {
+        selectedForCompare.delete(resortName);
+    } else if (selectedForCompare.size < 3) {
+        selectedForCompare.add(resortName);
+    }
+    updateCompareUI();
+}
+
+function updateCompareUI() {
+    const count = selectedForCompare.size;
+    const bar = document.getElementById('compareBar');
+    const countEl = document.getElementById('compareCount');
+    if (!bar || !countEl) return;
+
+    if (count >= 2) {
+        bar.classList.remove('hidden');
+        countEl.textContent = `${count} station${count > 1 ? 's' : ''} sélectionnée${count > 1 ? 's' : ''}`;
+    } else {
+        bar.classList.add('hidden');
+    }
+
+    allCards.forEach(({ resort, card }) => {
+        const isSelected = selectedForCompare.has(resort.name);
+        const btn = card.querySelector('.compare-toggle-btn');
+        if (btn) {
+            btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+            btn.textContent = isSelected ? '✓ Sélectionné' : '+ Comparer';
+            if (!isSelected && count >= 3) {
+                btn.setAttribute('disabled', 'true');
+            } else {
+                btn.removeAttribute('disabled');
+            }
+        }
+        if (isSelected) {
+            card.classList.add('compare-selected');
+        } else {
+            card.classList.remove('compare-selected');
+        }
+    });
+}
+
+function openCompareModal() {
+    const modal = document.getElementById('compareModal');
+    const container = document.getElementById('compareTableContainer');
+    if (!modal || !container) return;
+
+    const selected = allCards.filter(({ resort }) => selectedForCompare.has(resort.name));
+    container.textContent = '';
+    container.appendChild(buildCompareTable(selected));
+
+    modal.classList.remove('hidden');
+    const closeBtn = document.getElementById('compareModalClose');
+    if (closeBtn) closeBtn.focus();
+}
+
+function closeCompareModal() {
+    const modal = document.getElementById('compareModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function buildCompareTable(selected) {
+    const wrapper = el('div', { cls: ['compare-table-wrapper'] });
+    const table = document.createElement('table');
+    table.classList.add('compare-table-el');
+
+    // Header: resort names
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const thEmpty = el('th', { cls: ['compare-th-label'], text: 'Critère' });
+    headerRow.appendChild(thEmpty);
+    selected.forEach(({ resort }) => {
+        const th = el('th', { cls: ['compare-th-resort'] });
+        th.appendChild(el('div', { cls: ['compare-resort-name'], text: resort.name }));
+        th.appendChild(el('div', { cls: ['compare-resort-meta'], text: `${resort.country} · ${resort.altitude} m` }));
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+
+    function addRow(label, values) {
+        const row = document.createElement('tr');
+        row.appendChild(el('td', { cls: ['compare-td-label'], text: label }));
+        values.forEach(({ text, extraCls = [] }) => {
+            const td = el('td', { cls: ['compare-td', ...extraCls] });
+            td.textContent = text;
+            row.appendChild(td);
+        });
+        tbody.appendChild(row);
+    }
+
+    addRow('Météo actuelle', selected.map(({ data }) => {
+        if (!data) return { text: '–' };
+        const w = WMO_CODES[data.current_weather.weathercode] || DEFAULT_WEATHER;
+        return { text: `${w.icon} ${w.desc}` };
+    }));
+
+    addRow('Température', selected.map(({ data }) => {
+        if (!data) return { text: '–' };
+        return { text: `${Math.round(data.current_weather.temperature)}°C` };
+    }));
+
+    addRow('Enneigement', selected.map(({ data }) => {
+        if (!data) return { text: '–' };
+        const snowCm = currentSnowDepthCm(data.hourly);
+        return { text: snowCm != null ? `${snowCm} cm` : '–', extraCls: ['snow-value'] };
+    }));
+
+    addRow('Vent', selected.map(({ data }) => {
+        if (!data) return { text: '–' };
+        const wind = Math.round(data.current_weather.windspeed);
+        return { text: `${wind} km/h`, extraCls: wind > 60 ? ['wind-high'] : [] };
+    }));
+
+    addRow('Min / Max', selected.map(({ data }) => {
+        if (!data || !data.daily || !data.daily.temperature_2m_min) return { text: '–' };
+        const min = Math.round(data.daily.temperature_2m_min[0]);
+        const max = Math.round(data.daily.temperature_2m_max[0]);
+        return { text: `${min}° / ${max}°C` };
+    }));
+
+    addRow('Chutes prévues', selected.map(({ data }) => {
+        if (!data || !data.daily) return { text: '–' };
+        const sf = data.daily.snowfall_sum ? Math.round(data.daily.snowfall_sum[0]) : 0;
+        return { text: `${sf} cm`, extraCls: ['snow-value'] };
+    }));
+
+    addRow('Conditions ski', selected.map(({ data }) => {
+        if (!data) return { text: '–' };
+        const cw = data.current_weather;
+        const snowCm = currentSnowDepthCm(data.hourly);
+        const rating = computeRating(cw.weathercode, Math.round(cw.windspeed), snowCm ?? 0);
+        return { text: rating.label, extraCls: [rating.class] };
+    }));
+
+    table.appendChild(tbody);
+    wrapper.appendChild(table);
+    return wrapper;
+}
+
+function initCompare() {
+    const compareBtn = document.getElementById('compareBtn');
+    if (compareBtn) compareBtn.addEventListener('click', openCompareModal);
+
+    const clearBtn = document.getElementById('clearCompareBtn');
+    if (clearBtn) clearBtn.addEventListener('click', () => {
+        selectedForCompare.clear();
+        updateCompareUI();
+    });
+
+    const closeBtn = document.getElementById('compareModalClose');
+    if (closeBtn) closeBtn.addEventListener('click', closeCompareModal);
+
+    const overlay = document.getElementById('compareModal');
+    if (overlay) {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeCompareModal();
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeCompareModal();
+    });
+}
+
+/* ===========================
    Main init
    =========================== */
 async function init() {
@@ -400,7 +692,7 @@ async function init() {
         const resort = RESORTS[i];
         if (result.status === 'fulfilled') {
             const card = buildResortCard(resort, result.value);
-            allCards.push({ resort, card });
+            allCards.push({ resort, card, data: result.value });
             grid.appendChild(card);
         } else {
             errorCount++;
@@ -408,7 +700,7 @@ async function init() {
             const errCard = el('article', { cls: ['resort-card', 'rating-poor'] });
             errCard.appendChild(el('div', { cls: ['resort-name'], text: resort.name }));
             errCard.appendChild(el('div', { cls: ['weather-desc'], text: '⚠ Données non disponibles' }));
-            allCards.push({ resort, card: errCard });
+            allCards.push({ resort, card: errCard, data: null });
             grid.appendChild(errCard);
         }
     });
@@ -420,6 +712,14 @@ async function init() {
     }
 
     updateTimestamp();
+    updateCompareUI();
+    applyFilters(); // re-apply active country filter + search query after data refresh
+
+    // Refresh map markers if map is already open
+    const mapContainer = document.getElementById('mapContainer');
+    if (mapContainer && !mapContainer.classList.contains('hidden')) {
+        updateMapMarkers();
+    }
 
     // Auto-refresh every 30 minutes
     setTimeout(() => { init(); }, 30 * 60 * 1000);
@@ -428,5 +728,7 @@ async function init() {
 // Start when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initFilters();
+    initCompare();
+    initMapToggle();
     init();
 });
